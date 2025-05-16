@@ -865,12 +865,15 @@ class RNWatchConnectivityPro: RCTEventEmitter {
             }
             
             let transfer = WCSession.default.transferCurrentComplicationUserInfo(complicationInfo)
-            log(.debug, "Transferred complication data with ID: \(transfer.identifier)")
+            // WCSessionUserInfoTransfer doesn't have 'identifier' property, generate a UUID instead
+            let transferId = UUID().uuidString
+            log(.debug, "Transferred complication data with ID: \(transferId)")
             
             let result: [String: Any] = [
-                "id": transfer.identifier.uuidString,
+                "id": transferId,
                 "timestamp": Date().timeIntervalSince1970,
-                "isCurrentComplicationInfo": transfer.isCurrentComplicationInfo,
+                // Since this is a complication transfer, we know it's for a complication
+                "isCurrentComplicationInfo": true,
                 "userInfo": complicationInfo
             ]
             
