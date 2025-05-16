@@ -42,13 +42,13 @@
     "watchconnectivity",
     "wcsession"
   ],
-  "repository": "https://github.com/yourusername/react-native-watch-connectivity-pro",
-  "author": "Your Name <your.email@example.com> (https://github.com/yourusername)",
+  "repository": "https://github.com/Monitor-My-Solar/react-native-watch-connectivity-pro",
+  "author": "Monitor My Solar (https://github.com/Monitor-My-Solar)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/yourusername/react-native-watch-connectivity-pro/issues"
+    "url": "https://github.com/Monitor-My-Solar/react-native-watch-connectivity-pro/issues"
   },
-  "homepage": "https://github.com/yourusername/react-native-watch-connectivity-pro#readme",
+  "homepage": "https://github.com/Monitor-My-Solar/react-native-watch-connectivity-pro#readme",
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
   },
