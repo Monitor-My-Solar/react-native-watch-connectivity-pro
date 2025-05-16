@@ -30,7 +30,6 @@
     "test": "jest",
     "typescript": "tsc --noEmit",
     "lint": "eslint \"**/*.{js,ts,tsx}\"",
-    "prepare": "bob build",
     "release": "release-it",
     "example": "yarn --cwd example",
     "bootstrap": "yarn example && yarn install"
@@ -43,7 +42,7 @@
     "wcsession"
   ],
   "repository": "https://github.com/Monitor-My-Solar/react-native-watch-connectivity-pro",
-  "author": "Monitor My Solar (https://github.com/Monitor-My-Solar)",
+  "author": "Monitor My Solar <support@monitor-my-solar.com> (https://github.com/Monitor-My-Solar)",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/Monitor-My-Solar/react-native-watch-connectivity-pro/issues"
