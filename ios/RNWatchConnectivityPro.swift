@@ -2,6 +2,43 @@ import Foundation
 import WatchConnectivity
 import React
 
+// Define the missing enum for log levels
+enum LogLevel {
+    case debug
+    case info
+    case warning
+    case error
+}
+
+// Define error types
+enum RNWCError: Error {
+    case sessionNotActive
+    case notSupported
+    case fileNotFound
+    
+    var code: String {
+        switch self {
+        case .sessionNotActive:
+            return "SESSION_NOT_ACTIVE"
+        case .notSupported:
+            return "NOT_SUPPORTED"
+        case .fileNotFound:
+            return "FILE_NOT_FOUND"
+        }
+    }
+    
+    var localizedDescription: String {
+        switch self {
+        case .sessionNotActive:
+            return "Watch session is not activated"
+        case .notSupported:
+            return "This feature is not supported on this device"
+        case .fileNotFound:
+            return "File not found"
+        }
+    }
+}
+
 @objc(RNWatchConnectivityPro)
 class RNWatchConnectivityPro: RCTEventEmitter {
     
@@ -19,6 +56,24 @@ class RNWatchConnectivityPro: RCTEventEmitter {
     // New property for file transfers
     private var fileTransfers = [String: WCSessionFileTransfer]()
     private var progressObservations = [String: NSKeyValueObservation]()
+    
+    // Add missing log function
+    private func log(_ level: LogLevel, _ message: String) {
+        // Prefix based on log level
+        let prefix = switch level {
+        case .debug:
+            "🔍 DEBUG: "
+        case .info:
+            "ℹ️ INFO: "
+        case .warning:
+            "⚠️ WARNING: "
+        case .error:
+            "❌ ERROR: "
+        }
+        
+        // Use our existing logToFile function
+        logToFile(prefix + message)
+    }
     
     override init() {
         super.init()
@@ -810,12 +865,12 @@ class RNWatchConnectivityPro: RCTEventEmitter {
             }
             
             let transfer = WCSession.default.transferCurrentComplicationUserInfo(complicationInfo)
-            log(.debug, "Transferred complication data with ID: \(transfer.userInfoTransfer.identifier)")
+            log(.debug, "Transferred complication data with ID: \(transfer.identifier)")
             
             let result: [String: Any] = [
-                "id": transfer.userInfoTransfer.identifier.uuidString,
+                "id": transfer.identifier.uuidString,
                 "timestamp": Date().timeIntervalSince1970,
-                "isCurrentComplicationInfo": transfer.userInfoTransfer.isCurrentComplicationInfo,
+                "isCurrentComplicationInfo": transfer.isCurrentComplicationInfo,
                 "userInfo": complicationInfo
             ]
             
