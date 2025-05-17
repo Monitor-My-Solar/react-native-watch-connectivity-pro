@@ -99,21 +99,29 @@ export type SendMessageResult = {
 export interface RNWatchConnectivityProModule {
   initSession(): Promise<boolean>;
   getReachability(): Promise<boolean>;
-  sendMessage(message: Record<string, any>, responseHandler?: string): Promise<SendMessageResult>;
+  sendMessage(
+    message: Record<string, any>,
+    responseHandler?: string
+  ): Promise<SendMessageResult>;
   updateApplicationContext(context: Record<string, any>): Promise<boolean>;
   getApplicationContext(): Promise<Record<string, any>>;
-  
+
   // Queue management
   queueMessage(message: Record<string, any>): Promise<Record<string, any>>;
   getQueueStatus(): Promise<MessageQueueStatus>;
   processMessageQueue(): Promise<QueueProcessResult>;
   clearMessageQueue(): Promise<boolean>;
-  
+
   // Complication support
   isComplicationEnabled(): Promise<boolean>;
   getRemainingComplicationTransfers(): Promise<number>;
-  transferCurrentComplicationUserInfo(userInfo: Record<string, any>): Promise<ComplicationTransferResult>;
-  
+  transferCurrentComplicationUserInfo(
+    userInfo: Record<string, any>
+  ): Promise<ComplicationTransferResult>;
+
   // File transfer
-  transferFile(filePath: string, metadata?: Record<string, any>): Promise<FileTransferInfo>;
-} 
+  transferFile(
+    filePath: string,
+    metadata?: Record<string, any>
+  ): Promise<FileTransferInfo>;
+}

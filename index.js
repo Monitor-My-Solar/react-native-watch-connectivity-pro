@@ -181,6 +181,14 @@ export default {
   },
 
   /**
+   * Check if the watch is currently reachable.
+   * @returns {Promise<{isReachable: boolean, isPaired: boolean, isWatchAppInstalled: boolean}>} A promise that resolves with the reachability status.
+   */
+  getReachability() {
+    return RNWatchConnectivityPro.getReachability();
+  },
+
+  /**
    * Add a listener for message queue update events.
    * @param {Function} callback - The callback function.
    * @returns {Object} A subscription object with a remove method.

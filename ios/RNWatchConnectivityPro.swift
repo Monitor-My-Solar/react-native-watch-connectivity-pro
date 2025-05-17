@@ -835,6 +835,27 @@ class RNWatchConnectivityPro: RCTEventEmitter {
         log(.debug, "Remaining complication transfers: \(remaining)")
         resolve(remaining)
     }
+
+    @objc(getReachability:reject:)
+    func getReachability(resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
+        guard WCSession.isSupported() else {
+            resolve(["isReachable": false, "isPaired": false, "isWatchAppInstalled": false])
+            return
+        }
+        
+        guard let session = session, session.activationState == .activated else {
+            resolve(["isReachable": false, "isPaired": false, "isWatchAppInstalled": false])
+            return
+        }
+        
+        logToFile("📱 [RNWatchConnectivityPro] Getting reachability status: \(session.isReachable)")
+        
+        resolve([
+            "isReachable": session.isReachable,
+            "isPaired": session.isPaired,
+            "isWatchAppInstalled": session.isWatchAppInstalled
+        ])
+    }
     
     @objc(transferCurrentComplicationUserInfo:resolve:reject:)
     func transferCurrentComplicationUserInfo(_ userInfo: [String: Any], 

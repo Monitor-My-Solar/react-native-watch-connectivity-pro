@@ -69,31 +69,42 @@ eventEmitter.addListener(Events.MESSAGE_RECEIVED, (event: any) => {
   // Type guard for event structure
   if (event && typeof event === 'object' && 'message' in event) {
     const { message, hasReplyHandler, handlerId } = event;
-    console.log(`[WatchConnectivity] Received message from watch:`, JSON.stringify(message));
-    
+    console.log(
+      `[WatchConnectivity] Received message from watch:`,
+      JSON.stringify(message)
+    );
+
     // Debug log all properties to help diagnose issues
-    console.log(`[WatchConnectivity] Message has reply handler:`, hasReplyHandler);
+    console.log(
+      `[WatchConnectivity] Message has reply handler:`,
+      hasReplyHandler
+    );
     console.log(`[WatchConnectivity] Message handler ID:`, handlerId);
-    
+
     // Check if this message has a reply handler
     if (hasReplyHandler && handlerId) {
       // Create a wrapper function that will call our replyToMessage method
       const replyHandler = (response: { [key: string]: any }) => {
-        console.log(`[WatchConnectivity] Sending reply to watch:`, JSON.stringify(response));
+        console.log(
+          `[WatchConnectivity] Sending reply to watch:`,
+          JSON.stringify(response)
+        );
         RNWatchConnectivityPro.replyToMessage(handlerId, response)
-          .then(() => console.log(`[WatchConnectivity] Reply sent successfully`))
+          .then(() =>
+            console.log(`[WatchConnectivity] Reply sent successfully`)
+          )
           .catch((error: Error) => {
             console.error('[WatchConnectivity] Failed to send reply', error);
           });
       };
-      
+
       // Create a modified event with our reply handler attached
       const modifiedEvent = {
         ...event,
-        message,  // Ensure message is directly accessible
-        replyHandler
+        message, // Ensure message is directly accessible
+        replyHandler,
       };
-      
+
       // Just emit the event to the regular listeners
       eventEmitter.emit(Events.MESSAGE_RECEIVED, modifiedEvent);
     }
@@ -107,7 +118,9 @@ export default {
    */
   initSession(): Promise<WatchState> {
     if (Platform.OS !== 'ios') {
-      return Promise.reject(new Error('Watch connectivity is only available on iOS'));
+      return Promise.reject(
+        new Error('Watch connectivity is only available on iOS')
+      );
     }
     return RNWatchConnectivityPro.initSession();
   },
@@ -122,12 +135,14 @@ export default {
     replyHandler?: (response: { [key: string]: any }) => void
   ): Promise<void> {
     if (Platform.OS !== 'ios') {
-      return Promise.reject(new Error('Watch connectivity is only available on iOS'));
+      return Promise.reject(
+        new Error('Watch connectivity is only available on iOS')
+      );
     }
-    
+
     // Create a message payload without the reply handler
     const messagePayload = { ...message };
-    
+
     // Check if our enhanced method is available
     if (typeof RNWatchConnectivityPro.sendMessageWithReply === 'function') {
       // If there's a reply handler, generate an ID and store it
@@ -137,7 +152,7 @@ export default {
         replyHandlers[replyId] = replyHandler;
         messagePayload.__replyId = replyId;
       }
-      
+
       // Return a promise that will be resolved when the message is sent
       return new Promise((resolve, reject) => {
         RNWatchConnectivityPro.sendMessageWithReply(messagePayload, replyId)
@@ -159,14 +174,18 @@ export default {
       console.log('Using fallback sendMessage method');
       return new Promise((resolve, reject) => {
         try {
-          RNWatchConnectivityPro.sendMessage(messagePayload, (response: any) => {
-            if (replyHandler && typeof replyHandler === 'function') {
-              replyHandler(response);
+          RNWatchConnectivityPro.sendMessage(
+            messagePayload,
+            (response: any) => {
+              if (replyHandler && typeof replyHandler === 'function') {
+                replyHandler(response);
+              }
+            },
+            (error: Error) => {
+              reject(error);
+              console.warn('Message could not be sent');
             }
-          }, (error: Error) => {
-            reject(error);
-            console.warn('Message could not be sent');
-          });
+          );
           resolve();
           console.log('Message sent successfully');
         } catch (error) {
@@ -183,7 +202,9 @@ export default {
    */
   updateApplicationContext(context: { [key: string]: any }): Promise<void> {
     if (Platform.OS !== 'ios') {
-      return Promise.reject(new Error('Watch connectivity is only available on iOS'));
+      return Promise.reject(
+        new Error('Watch connectivity is only available on iOS')
+      );
     }
     return RNWatchConnectivityPro.updateApplicationContext(context);
   },
@@ -193,7 +214,9 @@ export default {
    */
   getApplicationContext(): Promise<{ [key: string]: any }> {
     if (Platform.OS !== 'ios') {
-      return Promise.reject(new Error('Watch connectivity is only available on iOS'));
+      return Promise.reject(
+        new Error('Watch connectivity is only available on iOS')
+      );
     }
     return RNWatchConnectivityPro.getApplicationContext();
   },
@@ -204,7 +227,9 @@ export default {
    */
   transferUserInfo(userInfo: { [key: string]: any }): Promise<UserInfo> {
     if (Platform.OS !== 'ios') {
-      return Promise.reject(new Error('Watch connectivity is only available on iOS'));
+      return Promise.reject(
+        new Error('Watch connectivity is only available on iOS')
+      );
     }
     return RNWatchConnectivityPro.transferUserInfo(userInfo);
   },
@@ -214,7 +239,9 @@ export default {
    */
   getCurrentUserInfo(): Promise<UserInfo[]> {
     if (Platform.OS !== 'ios') {
-      return Promise.reject(new Error('Watch connectivity is only available on iOS'));
+      return Promise.reject(
+        new Error('Watch connectivity is only available on iOS')
+      );
     }
     return RNWatchConnectivityPro.getCurrentUserInfo();
   },
@@ -225,19 +252,28 @@ export default {
    * @param metadata Optional metadata for the file
    * @returns Promise that resolves to the file transfer object
    */
-  transferFile(file: string, metadata?: { [key: string]: any }): Promise<FileTransfer> {
+  transferFile(
+    file: string,
+    metadata?: { [key: string]: any }
+  ): Promise<FileTransfer> {
     if (Platform.OS !== 'ios') {
-      return Promise.reject(new Error('Watch connectivity is only available on iOS'));
+      return Promise.reject(
+        new Error('Watch connectivity is only available on iOS')
+      );
     }
-    
+
     console.log(`[WatchConnectivity] Transferring file: ${file}`);
     return RNWatchConnectivityPro.transferFile(file, metadata)
       .then((transfer: FileTransfer) => {
-        console.log(`[WatchConnectivity] File transfer started with ID: ${transfer.id}`);
+        console.log(
+          `[WatchConnectivity] File transfer started with ID: ${transfer.id}`
+        );
         return transfer;
       })
       .catch((error: Error) => {
-        console.error(`[WatchConnectivity] File transfer failed: ${error.message}`);
+        console.error(
+          `[WatchConnectivity] File transfer failed: ${error.message}`
+        );
         throw error;
       });
   },
@@ -248,21 +284,27 @@ export default {
    */
   getFileTransfers(): Promise<FileTransfer[]> {
     if (Platform.OS !== 'ios') {
-      return Promise.reject(new Error('Watch connectivity is only available on iOS'));
+      return Promise.reject(
+        new Error('Watch connectivity is only available on iOS')
+      );
     }
-    
+
     console.log(`[WatchConnectivity] Getting file transfers`);
     return RNWatchConnectivityPro.getFileTransfers()
       .then((transfers: FileTransfer[]) => {
-        console.log(`[WatchConnectivity] Got ${transfers.length} file transfers`);
+        console.log(
+          `[WatchConnectivity] Got ${transfers.length} file transfers`
+        );
         return transfers;
       })
       .catch((error: Error) => {
-        console.error(`[WatchConnectivity] Failed to get file transfers: ${error.message}`);
+        console.error(
+          `[WatchConnectivity] Failed to get file transfers: ${error.message}`
+        );
         throw error;
       });
   },
-  
+
   /**
    * Cancel a file transfer
    * @param transferId ID of the file transfer to cancel
@@ -270,17 +312,23 @@ export default {
    */
   cancelFileTransfer(transferId: string): Promise<boolean> {
     if (Platform.OS !== 'ios') {
-      return Promise.reject(new Error('Watch connectivity is only available on iOS'));
+      return Promise.reject(
+        new Error('Watch connectivity is only available on iOS')
+      );
     }
-    
+
     console.log(`[WatchConnectivity] Cancelling file transfer: ${transferId}`);
     return RNWatchConnectivityPro.cancelFileTransfer(transferId)
       .then((result: boolean) => {
-        console.log(`[WatchConnectivity] File transfer cancelled: ${transferId}`);
+        console.log(
+          `[WatchConnectivity] File transfer cancelled: ${transferId}`
+        );
         return result;
       })
       .catch((error: Error) => {
-        console.error(`[WatchConnectivity] Failed to cancel file transfer: ${error.message}`);
+        console.error(
+          `[WatchConnectivity] Failed to cancel file transfer: ${error.message}`
+        );
         throw error;
       });
   },
@@ -290,9 +338,14 @@ export default {
    * @param handlerId Handler ID received with the message
    * @param response Object containing response data
    */
-  replyToMessage(handlerId: string, response: { [key: string]: any }): Promise<boolean> {
+  replyToMessage(
+    handlerId: string,
+    response: { [key: string]: any }
+  ): Promise<boolean> {
     if (Platform.OS !== 'ios') {
-      return Promise.reject(new Error('Watch connectivity is only available on iOS'));
+      return Promise.reject(
+        new Error('Watch connectivity is only available on iOS')
+      );
     }
     return RNWatchConnectivityPro.replyToMessage(handlerId, response);
   },
@@ -308,7 +361,9 @@ export default {
     newestMessage: number;
   }> {
     if (Platform.OS !== 'ios') {
-      return Promise.reject(new Error('Watch connectivity is only available on iOS'));
+      return Promise.reject(
+        new Error('Watch connectivity is only available on iOS')
+      );
     }
     return RNWatchConnectivityPro.getQueueStatus();
   },
@@ -319,7 +374,9 @@ export default {
    */
   processMessageQueue(): Promise<{ processed: number }> {
     if (Platform.OS !== 'ios') {
-      return Promise.reject(new Error('Watch connectivity is only available on iOS'));
+      return Promise.reject(
+        new Error('Watch connectivity is only available on iOS')
+      );
     }
     return RNWatchConnectivityPro.processMessageQueue();
   },
@@ -330,7 +387,9 @@ export default {
    */
   clearMessageQueue(): Promise<boolean> {
     if (Platform.OS !== 'ios') {
-      return Promise.reject(new Error('Watch connectivity is only available on iOS'));
+      return Promise.reject(
+        new Error('Watch connectivity is only available on iOS')
+      );
     }
     return RNWatchConnectivityPro.clearMessageQueue();
   },
@@ -356,11 +415,13 @@ export default {
    * Transfer data to update the watch complication
    * This is a high-priority transfer intended specifically for updating
    * the app's complication on the watch face
-   * 
+   *
    * @param {object} userInfo Data to send to the complication
    * @returns {Promise<ComplicationTransferResult>} Information about the transfer
    */
-  transferCurrentComplicationUserInfo(userInfo: Record<string, any>): Promise<ComplicationTransferResult> {
+  transferCurrentComplicationUserInfo(
+    userInfo: Record<string, any>
+  ): Promise<ComplicationTransferResult> {
     return RNWatchConnectivityPro.transferCurrentComplicationUserInfo(userInfo);
   },
 
@@ -388,18 +449,17 @@ export default {
         if (event.hasReplyHandler && event.handlerId) {
           // Create a wrapper function that will call our replyToMessage method
           const replyHandler = (response: { [key: string]: any }) => {
-            this.replyToMessage(event.handlerId, response)
-              .catch(err => {
-                console.error('Failed to send reply', err);
-              });
+            this.replyToMessage(event.handlerId, response).catch((err) => {
+              console.error('Failed to send reply', err);
+            });
           };
-          
+
           // Attach the reply handler to the event
           const modifiedEvent = {
             ...event,
-            replyHandler
+            replyHandler,
           };
-          
+
           // Pass the modified event to the listener
           listener(modifiedEvent);
         } else {
@@ -408,7 +468,7 @@ export default {
         }
       });
     }
-    
+
     // For other event types, just pass through
     return eventEmitter.addListener(eventName, listener);
   },
@@ -422,4 +482,4 @@ export default {
   },
 };
 
-export * from './types'; 
+export * from './types';

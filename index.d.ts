@@ -135,6 +135,16 @@ declare module 'react-native-watch-connectivity-pro' {
      * @returns A promise that resolves with the number of processed messages.
      */
     processMessageQueue(): Promise<{ processed: number }>;
+
+    /**
+     * Check if the watch is currently reachable.
+     * @returns A promise that resolves with the reachability status.
+     */
+    getReachability(): Promise<{
+      isReachable: boolean;
+      isPaired: boolean;
+      isWatchAppInstalled: boolean;
+    }>;
   }
 
   const RNWatchConnectivityPro: RNWatchConnectivityProStatic;
